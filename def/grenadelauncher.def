@@ -89,7 +89,7 @@ entityDef weapon_grenadelauncher
 	"weaponname"				"Grenade Launcher"
 	"def_projectile"			"projectile_grenade"
 	"ammoType"					"ammo_grenadelauncher"
-	"clipSize"					"8"
+	"clipSize"					"12"
 	"ammoRequired"				"1"
 	"mtr_icon"					"gfx/guis/hud/icons/gun_grenadelauncher"
 
@@ -113,8 +113,8 @@ entityDef weapon_grenadelauncher
 
 	"mtr_guiLightShader"		"lights/viewWeaponGuiLight"
 
- 	"fx_muzzleflash"			"effects/weapons/grenadelauncher/muzzleflash.fx"
- 	"fx_muzzleflash_world"		"effects/weapons/grenadelauncher/muzzleflash.fx"
+ 	"fx_muzzleflash"			"effects/mp/jumppad_trigger_cyan.fx"
+ 	"fx_muzzleflash_world"		"effects/mp/jumppad_trigger_cyan.fx"
 	"fx_respawn"				"effects/mp/itemrespawn.fx"
 
 	"snd_acquire"				"pickup_weapon"

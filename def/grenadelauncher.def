@@ -252,7 +252,7 @@ entityDef projectile_grenade
 	"angular_friction"			"0"
 	"contact_friction"			"10"
 	"bounce"					".65"
-	"gravity"					"1"
+	"gravity"					"0"
 	"fuse"						"10.5"
 								
 	"detonate_on_fuse"			"1"

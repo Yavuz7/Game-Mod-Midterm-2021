@@ -240,11 +240,11 @@ entityDef projectile_grenade
 	
 	"no_contents"				"0"
 								
-	"model"						"models/monsters/air_defense_cannon/busted_cannon.lwo"
+	"model"						"models/weapons/grenadelauncher/w_gl.lwo"
 	"def_damage"				"damage_grenadeDirect"
 	"def_splash_damage"			"damage_grenadeSplash"
 																											
-	"speed"						"700"
+	"speed"						"7000"
 	"angular_velocity"			"-10 5 1"
 	"settle_duration"			"0.08"
 	

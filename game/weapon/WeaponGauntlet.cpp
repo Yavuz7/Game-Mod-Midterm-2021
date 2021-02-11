@@ -474,14 +474,15 @@ stateResult_t rvWeaponGauntlet::State_Fire ( const stateParms_t& parms ) {
 			PlayAnim ( ANIMCHANNEL_ALL, "attack_start", parms.blendFrames );
 			StartBlade ( );
 			loopSound = LOOP_NONE;
+			Attack();
 			return SRESULT_STAGE(STAGE_START_WAIT);
 		
 		case STAGE_START_WAIT:
-			if ( !wsfl.attack ) {
+			if ( !wsfl.attack ) {				
 				return SRESULT_STAGE ( STAGE_END );
 			}
 			if ( AnimDone ( ANIMCHANNEL_ALL, parms.blendFrames ) ) {
-				return SRESULT_STAGE ( STAGE_LOOP );
+				//return SRESULT_STAGE ( STAGE_LOOP );
 			}
 			return SRESULT_WAIT;
 			
@@ -491,10 +492,10 @@ stateResult_t rvWeaponGauntlet::State_Fire ( const stateParms_t& parms ) {
 			return SRESULT_STAGE(STAGE_LOOP_WAIT);
 			
 		case STAGE_LOOP_WAIT:
-			if ( !wsfl.attack || wsfl.lowerWeapon ) {
-				return SRESULT_STAGE ( STAGE_END );
+			if ( !wsfl.attack || wsfl.lowerWeapon ) {	
+				return SRESULT_STAGE(STAGE_END);
 			}
-			Attack ( );
+			Attack ( );			
 			return SRESULT_WAIT;
 		
 		case STAGE_END:

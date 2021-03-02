@@ -159,6 +159,10 @@ void rvWeaponBlaster::Spawn ( void ) {
 	fireForced			= false;
 			
 	Flashlight ( owner->IsFlashlightOn() );
+	
+
+
+
 }
 
 /*
@@ -172,7 +176,8 @@ void rvWeaponBlaster::Save ( idSaveGame *savefile ) const {
 	savefile->WriteVec2 ( chargeGlow );
 	savefile->WriteBool ( fireForced );
 	savefile->WriteInt ( fireHeldTime );
-	savefile->WriteBool(fireHeld);
+	savefile->WriteBool(fireHeld);	
+
 }
 
 /*
@@ -187,6 +192,7 @@ void rvWeaponBlaster::Restore ( idRestoreGame *savefile ) {
 	savefile->ReadBool ( fireForced );
 	savefile->ReadInt ( fireHeldTime );
 	savefile->ReadBool(fireHeld);
+
 }
 
 /*
@@ -512,11 +518,14 @@ stateResult_t rvWeaponBlaster::State_Fire ( const stateParms_t& parms ) {
 		STAGE_INIT,
 		STAGE_WAIT,
 	};
+	idVec3 origin;
+	idMat3 axis;
 	switch (parms.stage) {
 	case STAGE_INIT:
 	
-			nextAttackTime = gameLocal.time + (fireRate * owner->PowerUpModifier(PMOD_FIRERATE));
-			Attack(false, 1, spread, 0, 1.0f);
+		nextAttackTime = gameLocal.time + (fireRate * owner->PowerUpModifier(PMOD_FIRERATE));
+		Attack(false, 1, 12, 0, 1.0f);
+		Attack(false, 1, -12, 0, 1.0f);
 		PlayAnim(ANIMCHANNEL_ALL, "fire", 0);
 		return SRESULT_STAGE(STAGE_WAIT);
 

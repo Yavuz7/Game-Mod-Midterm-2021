@@ -2594,7 +2594,10 @@ void rvWeapon::Attack( bool altAttack, int num_attacks, float spread, float fuse
 		idDict& dict = altAttack ? attackAltDict : attackDict;
 		power *= owner->PowerUpModifier( PMOD_PROJECTILE_DAMAGE );
 		if ( altAttack ? wfl.attackAltHitscan : wfl.attackHitscan ) {
-			Hitscan( dict, muzzleOrigin, muzzleAxis, num_attacks, spread, power );
+			
+			
+				Hitscan(dict, muzzleOrigin, muzzleAxis, num_attacks, spread, power);
+			
 		} else {
 			LaunchProjectiles( dict, muzzleOrigin, muzzleAxis, num_attacks, spread, fuseOffset, power );
 		}
@@ -2777,22 +2780,26 @@ void rvWeapon::Hitscan( const idDict& dict, const idVec3& muzzleOrigin, const id
 
 	float spreadRad = DEG2RAD( spread );
 	idVec3 end;
-	for( i = 0; i < num_hitscans; i++ ) {
-		if( weaponDef->dict.GetBool( "machinegunSpreadStyle" ) ) {	
+	for (i = 0; i < num_hitscans; i++) {
+		if (weaponDef->dict.GetBool("machinegunSpreadStyle")) {
 			float r = gameLocal.random.RandomFloat() * idMath::PI * 2.0f;
-			float u = idMath::Sin( r ) * gameLocal.random.CRandomFloat() * spread * 16;
-			r = idMath::Cos( r ) * gameLocal.random.CRandomFloat() * spread * 16;
+			float u = idMath::Sin(r) * gameLocal.random.CRandomFloat() * spread * 16;
+
+			u = idMath::Sin(r) * gameLocal.random.CRandomFloat() * spread * 16;
+			r = idMath::Cos(r) * gameLocal.random.CRandomFloat() * spread * 16;
 #ifdef _XBOX
-			end = muzzleOrigin + ( ( 8192 * 16 ) * muzzleAxis[ 0 ] );
-			end += ( r * muzzleAxis[ 1 ] );
-			end += ( u * muzzleAxis[ 2 ] );
+			end = muzzleOrigin + ((8192 * 16) * muzzleAxis[0]);
+			end += (r * muzzleAxis[1]);
+			end += (u * muzzleAxis[2]);
 #else
-			end = muzzleOrigin + ( ( 8192 * 16 ) * playerViewAxis[ 0 ] );
-			end += ( r * playerViewAxis[ 1 ] );
-			end += ( u * playerViewAxis[ 2 ] );
+			end = muzzleOrigin + ((8192 * 16) * playerViewAxis[0]);
+			end += (r * playerViewAxis[1]);
+			end += (u * playerViewAxis[2]);
+
 #endif
 			dir = end - muzzleOrigin;
-		} else if( weaponDef->dict.GetBool( "shotgunSpreadStyle" ) ) {
+		}
+		else if (weaponDef->dict.GetBool("shotgunSpreadStyle")) {
 			float r = gameLocal.random.CRandomFloat() * spread * 16;
 			float u = gameLocal.random.CRandomFloat() * spread * 16;
 
@@ -2801,26 +2808,28 @@ void rvWeapon::Hitscan( const idDict& dict, const idVec3& muzzleOrigin, const id
 			end += ( r * muzzleAxis[ 1 ] );
 			end += ( u * muzzleAxis[ 2 ] );
 #else
-			end = muzzleOrigin + ( ( 8192 * 16 ) * playerViewAxis[ 0 ] );
-			end += ( r * playerViewAxis[ 1 ] );
-			end += ( u * playerViewAxis[ 2 ] );
+			end = muzzleOrigin + ((8192 * 16) * playerViewAxis[0]);
+			end += (r * playerViewAxis[1]);
+			end += (u * playerViewAxis[2]);
 #endif
 			dir = end - muzzleOrigin;
-		} else {
-			ang = idMath::Sin( spreadRad * gameLocal.random.RandomFloat() );
-			spin = (float)DEG2RAD( 360.0f ) * gameLocal.random.RandomFloat();
+		}
+		else {
+			ang = idMath::Sin(spreadRad * gameLocal.random.RandomFloat());
+			spin = (float)DEG2RAD(360.0f) * gameLocal.random.RandomFloat();
 			//RAVEN BEGIN
 			//asalmon: xbox must use the muzzleAxis so the aim can be adjusted for aim assistance
 #ifdef _XBOX
 			dir = muzzleAxis[ 0 ] + muzzleAxis[ 2 ] * ( ang * idMath::Sin( spin ) ) - muzzleAxis[ 1 ] * ( ang * idMath::Cos( spin ) );
 #else
-			dir = playerViewAxis[ 0 ] + playerViewAxis[ 2 ] * ( ang * idMath::Sin( spin ) ) - playerViewAxis[ 1 ] * ( ang * idMath::Cos( spin ) );
+			dir = playerViewAxis[0] + playerViewAxis[2] * (ang * idMath::Sin(spin)) - playerViewAxis[1] * (ang * idMath::Cos(spin));
 #endif
 			//RAVEN END
 		}
 		dir.Normalize();
-
-		gameLocal.HitScan( dict, muzzleOrigin, dir, fxOrigin, owner, false, 1.0f, NULL, areas );
+		
+		gameLocal.HitScan(dict, muzzleOrigin, dir, fxOrigin, owner, false, 1.0f, NULL, areas);
+	
 
 		if ( gameLocal.isServer ) {
 			msg.WriteDir( dir, 24 );

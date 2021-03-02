@@ -639,10 +639,12 @@ entityDef player_marine
 	"weapon0_best"						"1"
 	"weapon0_cycle"						"1"
 	"weapon0_flashlight"					"0"
-	//"def_weapon0"						"weapon_blaster"
-	//"weapon0_best"						"1"			// whether weapon should be chosen when out of ammo
-	//"weapon0_cycle"						"1"			// whether weapon should be selected when using next/prev weapon
 	"weapon0_toggle"					"0"			// whether selecting weapon twice switches between current and previous weapons
+
+	"def_weapon11"						"weapon_blaster"
+	"weapon11_best"						"1"			// whether weapon should be chosen when out of ammo
+	"weapon11_cycle"						"1"			// whether weapon should be selected when using next/prev weapon
+	
 	//"weapon0_flashlight"					"1"
 
 	"def_weapon1"						"weapon_machinegun"
@@ -698,7 +700,7 @@ entityDef player_marine
 	// default weapons
 	// seperate multiple weapons with commas (no spaces).
 	// NOTE: default ammo must be specified explicitly.
-	"weapon"						"weapon_gauntlet"
+	"weapon"						"weapon_gauntlet,weapon_blaster"
 	"current_weapon"					"0"
 
 	"pm_jumpheight"						"48"
@@ -738,7 +740,7 @@ entityDef player_marine
 	"ammo_railgun"						"0"
 	"ammo_machinegun"					"0"
 	"ammo_nailgun"						"0"
-	"ammo_blaster"						"-1"
+	"ammo_blaster"						"200"
 	"ammo_shotgun"						"0"
 	"ammo_hyperblaster"					"0"
 	"ammo_rocketlauncher"					"0"
@@ -746,7 +748,7 @@ entityDef player_marine
 	"ammo_lightninggun"					"0"
 	"ammo_none"						"-1"
 
-	"max_ammo_blaster"					"-1"
+	"max_ammo_blaster"					"200"
 	"max_ammo_railgun"					"50"
 	"max_ammo_machinegun"					"300"
 	"max_ammo_nailgun"					"300"

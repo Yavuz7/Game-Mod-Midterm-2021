@@ -1112,6 +1112,7 @@ void idPhysics_Player::CheckGround( bool checkStuck ) {
 			// don't allow another jump for a little while
 			current.movementFlags |= PMF_TIME_LAND;
 			current.movementTime = 250;
+			
 		}		
 	}
 

@@ -32,6 +32,7 @@ private:
 	idVec2				chargeGlow;
 	bool				fireForced;
 	int					fireHeldTime;
+	bool				fireHeld;
 
 	stateResult_t		State_Raise				( const stateParms_t& parms );
 	stateResult_t		State_Lower				( const stateParms_t& parms );
@@ -148,6 +149,7 @@ rvWeaponBlaster::Spawn
 void rvWeaponBlaster::Spawn ( void ) {
 	viewModel->SetShaderParm ( BLASTER_SPARM_CHARGEGLOW, 0 );
 	SetState ( "Raise", 0 );
+	fireHeld = false;
 	
 	chargeGlow   = spawnArgs.GetVec2 ( "chargeGlow" );
 	chargeTime   = SEC2MS ( spawnArgs.GetFloat ( "chargeTime" ) );
@@ -170,6 +172,7 @@ void rvWeaponBlaster::Save ( idSaveGame *savefile ) const {
 	savefile->WriteVec2 ( chargeGlow );
 	savefile->WriteBool ( fireForced );
 	savefile->WriteInt ( fireHeldTime );
+	savefile->WriteBool(fireHeld);
 }
 
 /*
@@ -183,6 +186,7 @@ void rvWeaponBlaster::Restore ( idRestoreGame *savefile ) {
 	savefile->ReadVec2 ( chargeGlow );
 	savefile->ReadBool ( fireForced );
 	savefile->ReadInt ( fireHeldTime );
+	savefile->ReadBool(fireHeld);
 }
 
 /*
@@ -297,7 +301,7 @@ rvWeaponBlaster::State_Idle
 ================
 */
 stateResult_t rvWeaponBlaster::State_Idle ( const stateParms_t& parms ) {	
-	enum {
+	/*enum {
 		IDLE_INIT,
 		IDLE_WAIT,
 	};	
@@ -320,6 +324,59 @@ stateResult_t rvWeaponBlaster::State_Idle ( const stateParms_t& parms ) {
 				return SRESULT_DONE;
 			}
 			return SRESULT_WAIT;
+	}
+	return SRESULT_ERROR;
+
+}*/
+	enum {
+		STAGE_INIT,
+		STAGE_WAIT,
+	};
+	switch (parms.stage) {
+	case STAGE_INIT:
+		if (!AmmoAvailable()) {
+			SetStatus(WP_OUTOFAMMO);
+		}
+		else {
+			SetStatus(WP_READY);
+		}
+
+		PlayCycle(ANIMCHANNEL_ALL, "idle", parms.blendFrames);
+		return SRESULT_STAGE(STAGE_WAIT);
+
+	case STAGE_WAIT:
+		if (wsfl.lowerWeapon) {
+			SetState("Lower", 4);
+			return SRESULT_DONE;
+		}
+		if (UpdateFlashlight()) {
+			return SRESULT_DONE;
+		}
+
+		if (fireHeld && !wsfl.attack) {
+			fireHeld = false;
+		}
+		if (!clipSize) {
+			if (!fireHeld && gameLocal.time > nextAttackTime && wsfl.attack && AmmoAvailable()) {
+				SetState("Fire", 0);
+				return SRESULT_DONE;
+			}
+		}
+		else {
+			if (!fireHeld && gameLocal.time > nextAttackTime && wsfl.attack && AmmoInClip()) {
+				SetState("Fire", 0);
+				return SRESULT_DONE;
+			}
+			if (wsfl.attack && AutoReload() && !AmmoInClip() && AmmoAvailable()) {
+				SetState("Reload", 4);
+				return SRESULT_DONE;
+			}
+			if (wsfl.netReload || (wsfl.reload && AmmoInClip() < ClipSize() && AmmoAvailable()>AmmoInClip())) {
+				SetState("Reload", 4);
+				return SRESULT_DONE;
+			}
+		}
+		return SRESULT_WAIT;
 	}
 	return SRESULT_ERROR;
 }
@@ -398,7 +455,7 @@ rvWeaponBlaster::State_Fire
 ================
 */
 stateResult_t rvWeaponBlaster::State_Fire ( const stateParms_t& parms ) {
-	enum {
+	/*enum {
 		FIRE_INIT,
 		FIRE_WAIT,
 	};	
@@ -431,7 +488,7 @@ stateResult_t rvWeaponBlaster::State_Fire ( const stateParms_t& parms ) {
 				PlayEffect ( "fx_chargedflash", barrelJointView, false );
 				PlayAnim( ANIMCHANNEL_ALL, "chargedfire", parms.blendFrames );
 			} else {
-				Attack ( false, 20, 3, 0, 1.5f );
+				Attack ( false, 1, spread, 0, 1.0f );
 				PlayEffect ( "fx_normalflash", barrelJointView, false );
 				PlayAnim( ANIMCHANNEL_ALL, "fire", parms.blendFrames );
 			}
@@ -450,7 +507,36 @@ stateResult_t rvWeaponBlaster::State_Fire ( const stateParms_t& parms ) {
 			return SRESULT_WAIT;
 	}			
 	return SRESULT_ERROR;
+}*/
+	enum {
+		STAGE_INIT,
+		STAGE_WAIT,
+	};
+	switch (parms.stage) {
+	case STAGE_INIT:
+	
+			nextAttackTime = gameLocal.time + (fireRate * owner->PowerUpModifier(PMOD_FIRERATE));
+			Attack(false, 1, spread, 0, 1.0f);
+		PlayAnim(ANIMCHANNEL_ALL, "fire", 0);
+		return SRESULT_STAGE(STAGE_WAIT);
+
+	case STAGE_WAIT:
+		if (!fireHeld && wsfl.attack && gameLocal.time >= nextAttackTime && AmmoInClip() && !wsfl.lowerWeapon) {
+			SetState("Fire", 0);
+			return SRESULT_DONE;
+		}
+		if (AnimDone(ANIMCHANNEL_ALL, 0)) {
+			SetState("Idle", 0);
+			return SRESULT_DONE;
+		}
+		if (UpdateFlashlight()) {
+			return SRESULT_DONE;
+		}
+		return SRESULT_WAIT;
+	}
+	return SRESULT_ERROR;
 }
+
 
 /*
 ================

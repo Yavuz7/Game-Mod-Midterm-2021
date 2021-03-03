@@ -32,6 +32,7 @@ public:
 protected:
 
 	void					UpdateCylinders(void);
+	bool				fireHeld;
 	
 	typedef enum {CYLINDER_RESET_POSITION,CYLINDER_MOVE_POSITION, CYLINDER_UPDATE_POSITION } CylinderState;
 	CylinderState								cylinderState;
@@ -85,6 +86,7 @@ void WeaponNapalmGun::Spawn( void ) {
 	assert(viewModel);
 	idAnimator* animator = viewModel->GetAnimator();
 	assert(animator);
+	fireHeld = false;
 
 	SetState( "Raise", 0 );	
 
@@ -207,6 +209,7 @@ void WeaponNapalmGun::Save( idSaveGame *saveFile ) const
 
 	saveFile->WriteInt(cylinderMoveTime);
 	saveFile->WriteInt(previousAmmo);
+	saveFile->WriteBool(fireHeld);
 }
 
 /*
@@ -225,6 +228,7 @@ void WeaponNapalmGun::Restore( idRestoreGame *saveFile ) {
 
 	saveFile->ReadInt(cylinderMoveTime);
 	saveFile->ReadInt(previousAmmo);
+	saveFile->ReadBool(fireHeld);
 }
 
 /*
@@ -387,7 +391,7 @@ WeaponNapalmGun::State_Fire
 ================
 */
 stateResult_t WeaponNapalmGun::State_Fire( const stateParms_t& parms ) {
-	enum {
+	/*enum {
 		STAGE_INIT,
 		STAGE_WAIT,
 	};	
@@ -425,8 +429,33 @@ stateResult_t WeaponNapalmGun::State_Fire( const stateParms_t& parms ) {
 			}
 			return SRESULT_WAIT;
 	}
+	return SRESULT_ERROR;*/
+	enum {
+		STAGE_INIT,
+		STAGE_WAIT,
+	};
+	switch (parms.stage) {
+	case STAGE_INIT:	
+			nextAttackTime = gameLocal.time + (fireRate * owner->PowerUpModifier(PMOD_FIRERATE));
+			Attack(false, 1, spread, 0, 1.0f);
+		
+		PlayAnim(ANIMCHANNEL_ALL, "fire", 0);
+		return SRESULT_STAGE(STAGE_WAIT);
+
+	case STAGE_WAIT:
+		if (!fireHeld && wsfl.attack && gameLocal.time >= nextAttackTime && AmmoInClip() && !wsfl.lowerWeapon) {
+			SetState("Fire", 0);
+			return SRESULT_DONE;
+		}
+		if (AnimDone(ANIMCHANNEL_ALL, 0)) {
+			SetState("Idle", 0);
+			return SRESULT_DONE;
+		}
+		return SRESULT_WAIT;
+	}
 	return SRESULT_ERROR;
 }
+
 
 stateResult_t WeaponNapalmGun::Frame_MoveCylinder( const stateParms_t& parms) {
 	cylinderState = CYLINDER_MOVE_POSITION;

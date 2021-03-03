@@ -3711,10 +3711,10 @@ void idPlayer::DrawHUD( idUserInterface *_hud ) {
 	// FIXME: this is temp to allow the sound meter to show up in the hud
 	// it should be commented out before shipping but the code can remain
 	// for mod developers to enable for the same functionality
-	_hud->SetStateInt( "s_debug", cvarSystem->GetCVarInteger( "s_showLevelMeter" ) );
+	//_hud->SetStateInt( "s_debug", cvarSystem->GetCVarInteger( "s_showLevelMeter" ) );
 
 	// don't draw main hud in spectator (only mphud)
-	if ( !spectating && !gameDebug.IsHudActive( DBGHUD_ANY ) ) {
+	if (!spectating && !gameDebug.IsHudActive(DBGHUD_ANY)) { 
 		// weapon targeting crosshair
 		if ( !GuiActive() ) {
 			if ( weapon && weapon->GetZoomGui( ) && zoomed ) {
@@ -11058,7 +11058,7 @@ void idPlayer::CalculateRenderView( void ) {
 // RAVEN END
 				SmoothenRenderView( false );
 			} else if ( pm_thirdPerson.GetBool() ) {
-				OffsetThirdPersonView( pm_thirdPersonAngle.GetFloat(), pm_thirdPersonRange.GetFloat(), pm_thirdPersonHeight.GetFloat(), pm_thirdPersonClip.GetBool() );
+				OffsetThirdPersonView( pm_thirdPersonAngle.GetFloat(), pm_thirdPersonRange.GetFloat(), pm_thirdPersonHeight.GetFloat(), pm_thirdPersonClip.GetBool() );				
 				SmoothenRenderView( false );
 			} else if ( pm_thirdPersonDeath.GetBool() ) {
 				range = gameLocal.time < minRespawnTime ? ( gameLocal.time + RAGDOLL_DEATH_TIME - minRespawnTime ) * ( 120.0f / RAGDOLL_DEATH_TIME ) : 120.0f;

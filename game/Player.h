@@ -28,7 +28,7 @@ extern const idEventDef EV_Player_SetArmor;
 extern const idEventDef EV_Player_SetExtraProjPassEntity;
 extern const idEventDef EV_Player_DamageEffect;
 
-const float THIRD_PERSON_FOCUS_DISTANCE	= 512.0f;
+const float THIRD_PERSON_FOCUS_DISTANCE	= 0.0f;
 const int	LAND_DEFLECT_TIME			= 150;
 const int	LAND_RETURN_TIME			= 300;
 const int	FOCUS_TIME					= 200;

@@ -9125,10 +9125,10 @@ idMultiplayerGame::OpenLocalBuyMenu
 void idMultiplayerGame::OpenLocalBuyMenu( void )
 {
 	// Buy menu work in progress
-	//if ( gameLocal.mpGame.GetCurrentMenu() == 4 )
-	//{	
-	//		return;
-	//}
+	if ( gameLocal.mpGame.GetCurrentMenu() == 4 )
+	{	
+			return;
+	}
 
 	if ( currentMenu == 4 )
 		return; // Already open

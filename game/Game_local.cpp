@@ -1616,7 +1616,7 @@ void idGameLocal::MapRestart( int instance ) {
 
 		SetGameType();
 
-		mpGame.isBuyingAllowedRightNow = false;
+		mpGame.isBuyingAllowedRightNow = true;
 
 		if ( i != newInfo.GetNumKeyVals() ) {
 			gameLocal.sessionCommand = "nextMap";

@@ -1130,7 +1130,7 @@ idPlayer::idPlayer() {
 // squirrel: added DeadZone multiplayer mode
 	allowedToRespawn		= true;
 // squirrel: Mode-agnostic buymenus
-	inBuyZone				= false;
+	inBuyZone				= true;
 	inBuyZonePrev			= false;
 // RITUAL END
 	spectating				= false;
@@ -1672,7 +1672,7 @@ void idPlayer::Init( void ) {
 	// initialize the script variables
 	memset ( &pfl, 0, sizeof( pfl ) );
 	pfl.onGround = true;
-	pfl.noFallingDamage = false;
+	pfl.noFallingDamage = true;
 
 	// Start in idle
 	SetAnimState( ANIMCHANNEL_TORSO, "Torso_Idle", 0 );
@@ -7821,7 +7821,7 @@ void idPlayer::UpdateViewAngles( void ) {
 	UpdateDeltaViewAngles( viewAngles );
 
 	// orient the model towards the direction we're looking
-	SetAngles( idAngles( 0, viewAngles.yaw, 0 ) );
+	//SetAngles( idAngles( 0, viewAngles.yaw, 0 ) );
 
 	// save in the log for analyzing weapon angle offsets
 	loggedViewAngles[ gameLocal.framenum & (NUM_LOGGED_VIEW_ANGLES-1) ] = viewAngles;
@@ -9751,7 +9751,7 @@ void idPlayer::Killed( idEntity *inflictor, idEntity *attacker, int damage, cons
 			if( gameLocal.mpGame.GetGameState()->GetMPGameState() != WARMUP )
 			{
 				/// Remove the player's armor
-				inventory.armor = 0;
+				//inventory.armor = 0;
 
 				/// Preserve this player's weapons at the state of his death, to be restored on respawn
 				carryOverCurrentWeapon = currentWeapon;

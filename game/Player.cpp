@@ -7821,7 +7821,7 @@ void idPlayer::UpdateViewAngles( void ) {
 	UpdateDeltaViewAngles( viewAngles );
 
 	// orient the model towards the direction we're looking
-	//SetAngles( idAngles( 0, viewAngles.yaw, 0 ) );
+	SetAngles( idAngles( 0, viewAngles.yaw, 0 ) );
 
 	// save in the log for analyzing weapon angle offsets
 	loggedViewAngles[ gameLocal.framenum & (NUM_LOGGED_VIEW_ANGLES-1) ] = viewAngles;

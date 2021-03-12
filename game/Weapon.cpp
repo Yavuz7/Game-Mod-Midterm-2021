@@ -2207,7 +2207,7 @@ void rvWeapon::UpdateCrosshairGUI( idUserInterface* gui ) const {
 	//gui->SetStateString ( "crossImage", spawnArgs.GetString ( "mtr_crosshair" ) );
 // RAVEN END
 	gui->SetStateString( "crossColor", g_crosshairColor.GetString() );
-	gui->SetStateInt( "crossOffsetX", spawnArgs.GetInt( "crosshairOffsetX", "0" ) );
+	//gui->SetStateInt( "crossOffsetX", spawnArgs.GetInt( "crosshairOffsetX", "0" ) );
 	gui->SetStateInt( "crossOffsetY", spawnArgs.GetInt( "crosshairOffsetY", "0" ) );
  	gui->StateChanged( gameLocal.time );
 }

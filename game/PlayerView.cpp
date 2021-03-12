@@ -776,7 +776,7 @@ void idPlayerView::RenderPlayerView( idUserInterface *hud ) {
 		}
 
 		ScreenFade();
-		SingleView(hud, view, RF_GUI_ONLY);
+		
 	}
 	if (!guiRendered) {
 		SingleView(hud, view, RF_GUI_ONLY);

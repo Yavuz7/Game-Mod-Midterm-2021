@@ -17,6 +17,7 @@ AI.cpp
 #include "../Projectile.h"
 #include "../spawner.h"
 #include "AI_Tactical.h"
+#include "../Player.h"
 
 const char* aiTalkMessageString [ ] = {
 	"None",
@@ -1626,6 +1627,8 @@ void idAI::Killed( idEntity *inflictor, idEntity *attacker, int damage, const id
 	}
 
 	aifl.dead = true;
+	
+	
 
 	// turn off my flashlight, if I had one
 	ProcessEvent( &AI_Flashlight, false );

@@ -203,6 +203,9 @@ public:
 	int						powerups;
 	int						armor;
 	int						maxarmor;
+	//weaponlevels
+	int						weaponLevel;
+	int						weaponExp;
 	int						ammo[ MAX_AMMO ];
 	int						clip[ MAX_WEAPONS ];
 	int						powerupEndTime[ POWERUP_MAX ];

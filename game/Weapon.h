@@ -332,8 +332,9 @@ public:
 	idVec3							ejectOffset;
 
 	int								fireRate;
-	//weaponlevels
-	int								weaponLevel;
+
+	//temp
+	int							weaponLevel;
 	int								altFireRate;
 	float							spread;
 	int								nextAttackTime;

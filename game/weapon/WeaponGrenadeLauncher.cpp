@@ -145,8 +145,8 @@ stateResult_t rvWeaponGrenadeLauncher::State_Fire ( const stateParms_t& parms ) 
 	switch ( parms.stage ) {
 		case STAGE_INIT:
 			nextAttackTime = gameLocal.time + (fireRate * owner->PowerUpModifier(PMOD_FIRERATE));
-			for (int i = 0; i < 4; i++){
-				Attack(false, 3, spread + 2, 0, 0.1f);
+			for (int i = 0; i < 2; i++){
+				Attack(false, 1, spread, 0, weaponLevel*1.0f);
 			}
 			PlayAnim ( ANIMCHANNEL_ALL, GetFireAnim(), 0 );	
 			return SRESULT_STAGE ( STAGE_WAIT );

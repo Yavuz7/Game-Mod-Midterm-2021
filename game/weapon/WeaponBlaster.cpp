@@ -524,10 +524,10 @@ stateResult_t rvWeaponBlaster::State_Fire ( const stateParms_t& parms ) {
 	case STAGE_INIT:
 	
 		nextAttackTime = gameLocal.time + (fireRate * owner->PowerUpModifier(PMOD_FIRERATE));
-		Attack(false, 1, 12, 0, 1.0f);
+		Attack(false, 12, 1, 0, weaponLevel*1.0f);
 		PlayAnim(ANIMCHANNEL_ALL, "fire", 0);
 		nextAttackTime = gameLocal.time + (fireRate * owner->PowerUpModifier(PMOD_FIRERATE));
-		Attack(false, 1, spread, 0, 1.0f);
+		Attack(false, 1, spread, 0, weaponLevel*1.0f);
 		PlayAnim(ANIMCHANNEL_ALL, "fire", 0);
 		return SRESULT_STAGE(STAGE_WAIT);
 

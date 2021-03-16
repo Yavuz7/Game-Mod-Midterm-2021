@@ -602,6 +602,8 @@ void rvWeapon::Spawn ( void ) {
 	status			= WP_HOLSTERED;
 	lastAttack		= 0;
  	clipPredictTime	= 0;
+	//weaponlevels
+	weaponLevel = 1;
 
 	muzzleAxis.Identity();
 	muzzleOrigin.Zero();
@@ -1322,7 +1324,7 @@ void rvWeapon::Save ( idSaveGame *savefile ) const {
 	savefile->WriteFloat	( muzzleOffset );
 	projectileEnt.Save ( savefile );
 	savefile->WriteVec3		( ejectOffset );	// cnicholson: Added unsaved var
-
+	savefile->WriteInt		(weaponLevel);
 	savefile->WriteInt		( fireRate );
 	savefile->WriteFloat	( spread );
 	// savefile->WriteInt	( nextAttackTime ); // cnicholson: This is set to 0 in restore, so don't save it
@@ -1455,6 +1457,7 @@ void rvWeapon::Restore ( idRestoreGame *savefile ) {
 	projectileEnt.Restore ( savefile );
 	savefile->ReadVec3		( ejectOffset );	// cnicholson: Added unrestored var
 
+	savefile->ReadInt(weaponLevel);
 	savefile->ReadInt		( fireRate );
 	savefile->ReadFloat		( spread );
 	nextAttackTime = 0;

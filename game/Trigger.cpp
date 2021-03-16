@@ -342,7 +342,7 @@ void idTrigger_Multi::Spawn( void ) {
 	spawnArgs.GetInt( "removeItem", "0", removeItem );
 	spawnArgs.GetBool( "triggerFirst", "0", triggerFirst );
 	spawnArgs.GetBool( "triggerWithSelf", "0", triggerWithSelf );
-	spawnArgs.GetInt( "buyZone", "3", buyZoneTrigger);
+	spawnArgs.GetInt( "buyZone", "0", buyZoneTrigger);
 	spawnArgs.GetInt( "controlZone", "0", controlZoneTrigger);
 
 	if ( buyZoneTrigger == -1 )
@@ -645,11 +645,11 @@ void idTrigger_Multi::Event_Touch( idEntity *other, trace_t *trace ) {
 		    // Buy zone handling
 		   // if ( buyZoneTrigger /*&& gameLocal.mpGame.mpGameState.gameState.currentState != 1*/ ) {
 			    idPlayer *p = static_cast< idPlayer * >( other );
-			  //  if ( buyZoneTrigger-1 == p->team || buyZoneTrigger == 3)
-			  //  {
+			    if ( buyZoneTrigger-1 == p->team || buyZoneTrigger == 3)
+			    {
 				    p->inBuyZone = true;
 				    p->inBuyZonePrev = true;
-			    //}
+			    }
 		   // }
     
 		    // Control zone handling

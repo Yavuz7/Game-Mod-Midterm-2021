@@ -204,8 +204,8 @@ public:
 	int						armor;
 	int						maxarmor;
 	//weaponlevels
-	int						weaponLevel;
-	int						weaponExp;
+	static int						weaponLevel;
+	static int						weaponExp;
 	int						ammo[ MAX_AMMO ];
 	int						clip[ MAX_WEAPONS ];
 	int						powerupEndTime[ POWERUP_MAX ];
@@ -294,8 +294,8 @@ public:
 	bool					godmode;
 	int						godmodeDamage;
 	bool					undying;
-	void GainExp(void);
-	int ReturnLevel(void);
+	static void GainExp(void);
+	static int ReturnLevel(void);
 	
 	bool					spawnAnglesSet;		// on first usercmd, we must set deltaAngles
 	idAngles				spawnAngles;

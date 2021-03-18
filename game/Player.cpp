@@ -47,7 +47,8 @@ idCVar net_showPredictionError( "net_showPredictionError", "-1", CVAR_INTEGER | 
 #ifdef _XENON
 bool g_ObjectiveSystemOpen = false;
 #endif
-
+int idInventory::weaponLevel = 1;
+int idInventory::weaponExp = 0;
 // distance between ladder rungs (actually is half that distance, but this sounds better)
 const int LADDER_RUNG_DISTANCE = 32;
 
@@ -2975,27 +2976,29 @@ void idPlayer::SpawnToPoint( const idVec3 &spawn_origin, const idAngles &spawn_a
 }
 /*
 ==============
-idInventory::GainExp - Hopefully this works ,w,
+idInventory::GainExp - It works! I think
 ==============
 */
 void idPlayer::GainExp(void){
 	
-	inventory.weaponExp += 1;
-	int a = inventory.weaponLevel;
-	inventory.weaponLevel = inventory.weaponExp / 2;
-	gameLocal.Printf("CurrentExp : %u \n ", inventory.weaponExp);
-	if (a < inventory.weaponLevel){
-		gameLocal.Printf("Weapon Level increased to :%u \n ", inventory.weaponLevel);
+	idInventory::weaponExp += 1;
+	int a = idInventory::weaponLevel;
+	if (idInventory::weaponExp >= 2){
+		idInventory::weaponLevel = idInventory::weaponExp / 2;
+	}
+	gameLocal.Printf("CurrentExp : %u \n ", idInventory::weaponExp);
+	if (a < idInventory::weaponLevel){
+		gameLocal.Printf("Weapon Level increased to :%u \n ", idInventory::weaponLevel);
 	}
 }
 
 /*
 ==============
-idInventory::Return Level - Hopefully this works ,w,
+idInventory::Return Level - this is unneeded now that the variables are static, i think
 ==============
 */
 int idPlayer::ReturnLevel(void){
-	return inventory.weaponLevel;
+	return idInventory::weaponLevel;
 }
 
 

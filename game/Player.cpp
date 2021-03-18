@@ -570,14 +570,7 @@ void idInventory::Restore( idRestoreGame *savefile ) {
 	savefile->ReadSyncId( "idInventory::Restore" );
 }
 
-/*
-==============
-idInventory::GainExp
-==============
-*/
-void idInventory::GainExp(void){
 
-}
 
 /*
 ==============
@@ -1097,7 +1090,6 @@ idPlayer::idPlayer() {
 	memset( &usercmd, 0, sizeof( usercmd ) );
 
 	alreadyDidTeamAnnouncerSound = false;
-
 	doInitWeapon			= false;
 	noclip					= false;
 	godmode					= false;
@@ -2981,6 +2973,32 @@ void idPlayer::SpawnToPoint( const idVec3 &spawn_origin, const idAngles &spawn_a
 	lastImpulsePlayer = NULL;
 	lastImpulseTime = 0;
 }
+/*
+==============
+idInventory::GainExp - Hopefully this works ,w,
+==============
+*/
+void idPlayer::GainExp(void){
+	
+	inventory.weaponExp += 1;
+	int a = inventory.weaponLevel;
+	inventory.weaponLevel = inventory.weaponExp / 2;
+	gameLocal.Printf("CurrentExp : %u \n ", inventory.weaponExp);
+	if (a < inventory.weaponLevel){
+		gameLocal.Printf("Weapon Level increased to :%u \n ", inventory.weaponLevel);
+	}
+}
+
+/*
+==============
+idInventory::Return Level - Hopefully this works ,w,
+==============
+*/
+int idPlayer::ReturnLevel(void){
+	return inventory.weaponLevel;
+}
+
+
 
 /*
 ===============

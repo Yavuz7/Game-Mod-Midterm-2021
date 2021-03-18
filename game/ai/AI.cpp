@@ -1625,6 +1625,8 @@ void idAI::Killed( idEntity *inflictor, idEntity *attacker, int damage, const id
 		aifl.damage = true;
 		return;
 	}
+	idPlayer player;
+	player.GainExp();
 
 	aifl.dead = true;
 	

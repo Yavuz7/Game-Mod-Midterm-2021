@@ -572,6 +572,15 @@ void idInventory::Restore( idRestoreGame *savefile ) {
 
 /*
 ==============
+idInventory::GainExp
+==============
+*/
+void idInventory::GainExp(void){
+
+}
+
+/*
+==============
 idInventory::AmmoIndexForAmmoClass
 ==============
 */

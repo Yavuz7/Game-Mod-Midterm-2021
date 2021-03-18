@@ -206,6 +206,7 @@ public:
 	//weaponlevels
 	int						weaponLevel;
 	int						weaponExp;
+	static void GainExp(void);
 	int						ammo[ MAX_AMMO ];
 	int						clip[ MAX_WEAPONS ];
 	int						powerupEndTime[ POWERUP_MAX ];

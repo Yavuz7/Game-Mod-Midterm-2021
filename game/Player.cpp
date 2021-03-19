@@ -1757,7 +1757,7 @@ void idPlayer::Init( void ) {
 	
 	deathSkinTime		= 0;
 	deathStateHitch		= false;
-	jumpDuringHitch = false;
+	jumpDuringHitch = true;
 
 	lastPickupTime = 0;
 
@@ -9079,6 +9079,7 @@ void idPlayer::Move( void ) {
 		pfl.onLadder	= false;
 		pfl.jump		= false;
 	} else {
+		
 		pfl.crouch	= physicsObj.IsCrouching();
 		pfl.onGround	= physicsObj.HasGroundContacts();
 		pfl.onLadder	= physicsObj.OnLadder();

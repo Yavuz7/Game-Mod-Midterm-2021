@@ -1271,24 +1271,28 @@ void idPhysics_Player::CheckLadder( void ) {
 idPhysics_Player::CheckJump
 =============
 */
-bool idPhysics_Player::CheckJump( void ) {
+bool idPhysics_Player::CheckJump(void) {
 	idVec3 addVelocity;
-	
-	if ( command.upmove < 10 ) {
+
+	if (command.upmove < 10) {
 		// not holding jump
 		return false;
 	}
 
 	// must wait for jump to be released
-	if ( current.movementFlags & PMF_JUMP_HELD ) {
+	if (current.movementFlags & PMF_JUMP_HELD) {
 		return false;
 	}
 
 	// don't jump if we can't stand up
 	/*if ( current.movementFlags & PMF_DUCKED ) {
 		return false;
-	}*/
-
+		}*/
+	if ((current.movementFlags & PMF_DUCKED) != 0){
+		addVelocity = 4.0f * maxJumpHeight * -gravityVector;
+		addVelocity *= idMath::Sqrt(addVelocity.Normalize());
+		current.velocity += addVelocity;
+	}
 
 	groundPlane = false;		// jumping away
 	walking = false;

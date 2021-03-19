@@ -1273,7 +1273,14 @@ idPhysics_Player::CheckJump
 */
 bool idPhysics_Player::CheckJump(void) {
 	idVec3 addVelocity;
-
+	if (command.upmove < 0){
+		groundPlane = false;		// jumping away
+		walking = false;
+		command.upmove = 10;
+		addVelocity = 1.0f * maxJumpHeight * -gravityVector;
+		addVelocity *= idMath::Sqrt(addVelocity.Normalize());
+		current.velocity += addVelocity;
+	}
 	if (command.upmove < 10) {
 		// not holding jump
 		return false;
@@ -1288,7 +1295,7 @@ bool idPhysics_Player::CheckJump(void) {
 	/*if ( current.movementFlags & PMF_DUCKED ) {
 		return false;
 		}*/
-	if ((current.movementFlags & PMF_DUCKED) != 0){
+	if (command.upmove == 0){
 		addVelocity = 4.0f * maxJumpHeight * -gravityVector;
 		addVelocity *= idMath::Sqrt(addVelocity.Normalize());
 		current.velocity += addVelocity;

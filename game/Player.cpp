@@ -7464,7 +7464,21 @@ void idPlayer::SetFocus ( playerFocus_t newType, int _focusTime, idEntity* newEn
 		focusTime = gameLocal.time + _focusTime;
 	}
 }
+/*
+=================
+idPlayer::WrenchSlam
 
+Slam Attack for the Wrench
+=================
+*/
+/*void idPlayer::WrenchSlam(void){
+	if (!physicsObj.HasGroundContacts()){
+		physicsObj.SetGravity(.1*gameLocal.GetCurrentGravity(this));
+	}
+	else{
+		physicsObj.SetGravity(10*gameLocal.GetCurrentGravity(this));
+	}
+}*/
 /*
 =================
 idPlayer::CrashLand

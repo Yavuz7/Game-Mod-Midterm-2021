@@ -1308,14 +1308,13 @@ bool idPhysics_Player::CheckJump(void) {
 
 	groundPlane = false;		// jumping away
 	walking = false;
-	
 	current.movementFlags |= PMF_JUMP_HELD | PMF_JUMPED;
 
 	addVelocity = 2.0f * maxJumpHeight * -gravityVector;
 	addVelocity *= idMath::Sqrt( addVelocity.Normalize() );
 	current.velocity += addVelocity;
 	if (command.upmove < 10){
-		addVelocity = 4.0f * maxJumpHeight * -gravityVector;
+		addVelocity = 2.0f * maxJumpHeight * -gravityVector;
 		addVelocity *= idMath::Sqrt(addVelocity.Normalize());
 		current.velocity += addVelocity;
 	}

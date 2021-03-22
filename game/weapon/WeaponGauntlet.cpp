@@ -460,6 +460,7 @@ stateResult_t rvWeaponGauntlet::State_Idle ( const stateParms_t& parms ) {
 rvWeaponGauntlet::State_Fire
 ================
 */
+//idPlayer p;
 stateResult_t rvWeaponGauntlet::State_Fire ( const stateParms_t& parms ) {
 	enum {
 		STAGE_START,
@@ -473,7 +474,8 @@ stateResult_t rvWeaponGauntlet::State_Fire ( const stateParms_t& parms ) {
 		case STAGE_START:	
 			PlayAnim ( ANIMCHANNEL_ALL, "attack_start", parms.blendFrames );
 			StartBlade ( );
-			loopSound = LOOP_NONE;
+			loopSound = LOOP_NONE;			
+			//p.WrenchSlam();
 			Attack();
 			return SRESULT_STAGE(STAGE_START_WAIT);
 		

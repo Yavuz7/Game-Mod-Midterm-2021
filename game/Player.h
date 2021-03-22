@@ -296,7 +296,7 @@ public:
 	bool					undying;
 	static void GainExp(void);
 	static int ReturnLevel(void);
-	
+	//void WrenchSlam(void);
 	bool					spawnAnglesSet;		// on first usercmd, we must set deltaAngles
 	idAngles				spawnAngles;
 	idAngles				viewAngles;			// player view angles

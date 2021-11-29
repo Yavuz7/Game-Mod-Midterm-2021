@@ -1284,21 +1284,23 @@ void idProjectile::PlayPainEffect ( idEntity* ent, int damage, const rvDeclMatTy
 idProjectile::PlayDetonateEffect
 ================
 */
-void idProjectile::PlayDetonateEffect( const idVec3& origin, const idMat3& axis ) {
-	if( physicsObj.HasGroundContacts() ) {
-		if ( spawnArgs.GetBool( "detonateTestGroundMaterial" ) ) {
+void idProjectile::PlayDetonateEffect(const idVec3& origin, const idMat3& axis) {
+	if (physicsObj.HasGroundContacts()) {
+		if (spawnArgs.GetBool("detonateTestGroundMaterial")) {
 			trace_t tr;
 			idVec3 down;
 			down = GetPhysics()->GetOrigin() + GetPhysics()->GetGravityNormal()*8.0f;
-			gameLocal.Translation( this, tr, GetPhysics()->GetOrigin(), down, GetPhysics()->GetClipModel(), GetPhysics()->GetClipModel()->GetAxis(), GetPhysics()->GetClipMask(), this );
-			gameLocal.PlayEffect( gameLocal.GetEffect( spawnArgs, "fx_impact", tr.c.materialType ), origin, axis, false, vec3_origin, true );
-		} else {
-			gameLocal.PlayEffect( spawnArgs, "fx_impact", origin, axis, false, vec3_origin, true );
+			gameLocal.Translation(this, tr, GetPhysics()->GetOrigin(), down, GetPhysics()->GetClipModel(), GetPhysics()->GetClipModel()->GetAxis(), GetPhysics()->GetClipMask(), this);
+			gameLocal.PlayEffect(gameLocal.GetEffect(spawnArgs, "fx_impact", tr.c.materialType), origin, axis, false, vec3_origin, true);
+		}
+		else {
+			gameLocal.PlayEffect(spawnArgs, "fx_impact", origin, axis, false, vec3_origin, true);
 		}
 		return;
 	}
 
-	gameLocal.PlayEffect( spawnArgs, "fx_detonate", origin, axis, false, vec3_origin, true );
+	gameLocal.PlayEffect(spawnArgs, "fx_detonate", origin, axis, false, vec3_origin, true);
+
 }
 
 /*

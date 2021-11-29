@@ -28,7 +28,7 @@ extern const idEventDef EV_Player_SetArmor;
 extern const idEventDef EV_Player_SetExtraProjPassEntity;
 extern const idEventDef EV_Player_DamageEffect;
 
-const float THIRD_PERSON_FOCUS_DISTANCE	= 512.0f;
+const float THIRD_PERSON_FOCUS_DISTANCE	= 0.0f;
 const int	LAND_DEFLECT_TIME			= 150;
 const int	LAND_RETURN_TIME			= 300;
 const int	FOCUS_TIME					= 200;
@@ -203,6 +203,9 @@ public:
 	int						powerups;
 	int						armor;
 	int						maxarmor;
+	//weaponlevels
+	static int						weaponLevel;
+	static int						weaponExp;
 	int						ammo[ MAX_AMMO ];
 	int						clip[ MAX_WEAPONS ];
 	int						powerupEndTime[ POWERUP_MAX ];
@@ -291,7 +294,9 @@ public:
 	bool					godmode;
 	int						godmodeDamage;
 	bool					undying;
-
+	static void GainExp(void);
+	static int ReturnLevel(void);
+	//void WrenchSlam(void);
 	bool					spawnAnglesSet;		// on first usercmd, we must set deltaAngles
 	idAngles				spawnAngles;
 	idAngles				viewAngles;			// player view angles

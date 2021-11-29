@@ -13,6 +13,7 @@
 #include "ai/AI.h"
 #include "ai/AI_Manager.h"
 #include "client/ClientEffect.h"
+#include "Player.h"
 //#include "../renderer/tr_local.h"
 
 /***********************************************************************
@@ -602,6 +603,7 @@ void rvWeapon::Spawn ( void ) {
 	status			= WP_HOLSTERED;
 	lastAttack		= 0;
  	clipPredictTime	= 0;
+	weaponLevel = 1;
 
 	muzzleAxis.Identity();
 	muzzleOrigin.Zero();
@@ -1323,6 +1325,7 @@ void rvWeapon::Save ( idSaveGame *savefile ) const {
 	projectileEnt.Save ( savefile );
 	savefile->WriteVec3		( ejectOffset );	// cnicholson: Added unsaved var
 
+
 	savefile->WriteInt		( fireRate );
 	savefile->WriteFloat	( spread );
 	// savefile->WriteInt	( nextAttackTime ); // cnicholson: This is set to 0 in restore, so don't save it
@@ -1454,6 +1457,7 @@ void rvWeapon::Restore ( idRestoreGame *savefile ) {
 	savefile->ReadFloat		( muzzleOffset );
 	projectileEnt.Restore ( savefile );
 	savefile->ReadVec3		( ejectOffset );	// cnicholson: Added unrestored var
+	
 
 	savefile->ReadInt		( fireRate );
 	savefile->ReadFloat		( spread );
@@ -2207,7 +2211,7 @@ void rvWeapon::UpdateCrosshairGUI( idUserInterface* gui ) const {
 	//gui->SetStateString ( "crossImage", spawnArgs.GetString ( "mtr_crosshair" ) );
 // RAVEN END
 	gui->SetStateString( "crossColor", g_crosshairColor.GetString() );
-	gui->SetStateInt( "crossOffsetX", spawnArgs.GetInt( "crosshairOffsetX", "0" ) );
+	//gui->SetStateInt( "crossOffsetX", spawnArgs.GetInt( "crosshairOffsetX", "0" ) );
 	gui->SetStateInt( "crossOffsetY", spawnArgs.GetInt( "crosshairOffsetY", "0" ) );
  	gui->StateChanged( gameLocal.time );
 }
@@ -2594,7 +2598,14 @@ void rvWeapon::Attack( bool altAttack, int num_attacks, float spread, float fuse
 		idDict& dict = altAttack ? attackAltDict : attackDict;
 		power *= owner->PowerUpModifier( PMOD_PROJECTILE_DAMAGE );
 		if ( altAttack ? wfl.attackAltHitscan : wfl.attackHitscan ) {
-			Hitscan( dict, muzzleOrigin, muzzleAxis, num_attacks, spread, power );
+			if (spread == 12){
+				Hitscan(dict, playerViewAxis[1], muzzleAxis, num_attacks, .9f, power);
+				Hitscan(dict, muzzleOrigin, muzzleAxis , num_attacks, .9f, power);
+			}
+			else {
+				Hitscan(dict, muzzleOrigin, muzzleAxis, num_attacks, spread, power);
+			}
+			
 		} else {
 			LaunchProjectiles( dict, muzzleOrigin, muzzleAxis, num_attacks, spread, fuseOffset, power );
 		}
@@ -2777,22 +2788,26 @@ void rvWeapon::Hitscan( const idDict& dict, const idVec3& muzzleOrigin, const id
 
 	float spreadRad = DEG2RAD( spread );
 	idVec3 end;
-	for( i = 0; i < num_hitscans; i++ ) {
-		if( weaponDef->dict.GetBool( "machinegunSpreadStyle" ) ) {	
+	for (i = 0; i < num_hitscans; i++) {
+		if (weaponDef->dict.GetBool("machinegunSpreadStyle")) {
 			float r = gameLocal.random.RandomFloat() * idMath::PI * 2.0f;
-			float u = idMath::Sin( r ) * gameLocal.random.CRandomFloat() * spread * 16;
-			r = idMath::Cos( r ) * gameLocal.random.CRandomFloat() * spread * 16;
+			float u = idMath::Sin(r) * gameLocal.random.CRandomFloat() * spread * 16;
+
+			u = idMath::Sin(r) * gameLocal.random.CRandomFloat() * spread * 16;
+			r = idMath::Cos(r) * gameLocal.random.CRandomFloat() * spread * 16;
 #ifdef _XBOX
-			end = muzzleOrigin + ( ( 8192 * 16 ) * muzzleAxis[ 0 ] );
-			end += ( r * muzzleAxis[ 1 ] );
-			end += ( u * muzzleAxis[ 2 ] );
+			end = muzzleOrigin + ((8192 * 16) * muzzleAxis[0]);
+			end += (r * muzzleAxis[1]);
+			end += (u * muzzleAxis[2]);
 #else
-			end = muzzleOrigin + ( ( 8192 * 16 ) * playerViewAxis[ 0 ] );
-			end += ( r * playerViewAxis[ 1 ] );
-			end += ( u * playerViewAxis[ 2 ] );
+			end = muzzleOrigin + ((8192 * 16) * playerViewAxis[0]);
+			end += (r * playerViewAxis[1]);
+			end += (u * playerViewAxis[2]);
+
 #endif
 			dir = end - muzzleOrigin;
-		} else if( weaponDef->dict.GetBool( "shotgunSpreadStyle" ) ) {
+		}
+		else if (weaponDef->dict.GetBool("shotgunSpreadStyle")) {
 			float r = gameLocal.random.CRandomFloat() * spread * 16;
 			float u = gameLocal.random.CRandomFloat() * spread * 16;
 
@@ -2801,26 +2816,28 @@ void rvWeapon::Hitscan( const idDict& dict, const idVec3& muzzleOrigin, const id
 			end += ( r * muzzleAxis[ 1 ] );
 			end += ( u * muzzleAxis[ 2 ] );
 #else
-			end = muzzleOrigin + ( ( 8192 * 16 ) * playerViewAxis[ 0 ] );
-			end += ( r * playerViewAxis[ 1 ] );
-			end += ( u * playerViewAxis[ 2 ] );
+			end = muzzleOrigin + ((8192 * 16) * playerViewAxis[0]);
+			end += (r * playerViewAxis[1]);
+			end += (u * playerViewAxis[2]);
 #endif
 			dir = end - muzzleOrigin;
-		} else {
-			ang = idMath::Sin( spreadRad * gameLocal.random.RandomFloat() );
-			spin = (float)DEG2RAD( 360.0f ) * gameLocal.random.RandomFloat();
+		}
+		else {
+			ang = idMath::Sin(spreadRad * gameLocal.random.RandomFloat());
+			spin = (float)DEG2RAD(360.0f) * gameLocal.random.RandomFloat();
 			//RAVEN BEGIN
 			//asalmon: xbox must use the muzzleAxis so the aim can be adjusted for aim assistance
 #ifdef _XBOX
 			dir = muzzleAxis[ 0 ] + muzzleAxis[ 2 ] * ( ang * idMath::Sin( spin ) ) - muzzleAxis[ 1 ] * ( ang * idMath::Cos( spin ) );
 #else
-			dir = playerViewAxis[ 0 ] + playerViewAxis[ 2 ] * ( ang * idMath::Sin( spin ) ) - playerViewAxis[ 1 ] * ( ang * idMath::Cos( spin ) );
+			dir = playerViewAxis[0] + playerViewAxis[2] * (ang * idMath::Sin(spin)) - playerViewAxis[1] * (ang * idMath::Cos(spin));
 #endif
 			//RAVEN END
 		}
 		dir.Normalize();
-
-		gameLocal.HitScan( dict, muzzleOrigin, dir, fxOrigin, owner, false, 1.0f, NULL, areas );
+		
+		gameLocal.HitScan(dict, muzzleOrigin, dir, fxOrigin, owner, false, 1.0f, NULL, areas);
+	
 
 		if ( gameLocal.isServer ) {
 			msg.WriteDir( dir, 24 );

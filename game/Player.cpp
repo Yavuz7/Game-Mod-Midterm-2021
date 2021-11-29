@@ -47,7 +47,8 @@ idCVar net_showPredictionError( "net_showPredictionError", "-1", CVAR_INTEGER | 
 #ifdef _XENON
 bool g_ObjectiveSystemOpen = false;
 #endif
-
+int idInventory::weaponLevel = 1;
+int idInventory::weaponExp = 0;
 // distance between ladder rungs (actually is half that distance, but this sounds better)
 const int LADDER_RUNG_DISTANCE = 32;
 
@@ -274,6 +275,8 @@ void idInventory::GetPersistantData( idDict &dict ) {
 
 	// armor
 	dict.SetInt( "armor", armor );
+	dict.SetInt("weaponLevel", weaponLevel);
+	dict.SetInt("weaponExp", weaponExp);
 
 	// ammo
 	for( i = 0; i < MAX_AMMOTYPES; i++ ) {
@@ -404,6 +407,9 @@ void idInventory::Save( idSaveGame *savefile ) const {
 	savefile->WriteInt( powerups );
 	savefile->WriteInt( armor );
 	savefile->WriteInt( maxarmor );
+	//weapon levels
+	savefile->WriteInt(weaponLevel);
+	savefile->WriteInt(weaponExp);
 
 	for( i = 0; i < MAX_AMMO; i++ ) {
 		savefile->WriteInt( ammo[ i ] );
@@ -484,6 +490,9 @@ void idInventory::Restore( idRestoreGame *savefile ) {
 	savefile->ReadInt( powerups );
 	savefile->ReadInt( armor );
 	savefile->ReadInt( maxarmor );
+	//weapon levels
+	savefile->ReadInt(weaponLevel);
+	savefile->ReadInt(weaponExp);
 
 	for( i = 0; i < MAX_AMMO; i++ ) {
 		savefile->ReadInt( ammo[ i ] );
@@ -561,6 +570,8 @@ void idInventory::Restore( idRestoreGame *savefile ) {
 
 	savefile->ReadSyncId( "idInventory::Restore" );
 }
+
+
 
 /*
 ==============
@@ -1080,7 +1091,6 @@ idPlayer::idPlayer() {
 	memset( &usercmd, 0, sizeof( usercmd ) );
 
 	alreadyDidTeamAnnouncerSound = false;
-
 	doInitWeapon			= false;
 	noclip					= false;
 	godmode					= false;
@@ -1130,7 +1140,7 @@ idPlayer::idPlayer() {
 // squirrel: added DeadZone multiplayer mode
 	allowedToRespawn		= true;
 // squirrel: Mode-agnostic buymenus
-	inBuyZone				= false;
+	inBuyZone				= true;
 	inBuyZonePrev			= false;
 // RITUAL END
 	spectating				= false;
@@ -1672,7 +1682,7 @@ void idPlayer::Init( void ) {
 	// initialize the script variables
 	memset ( &pfl, 0, sizeof( pfl ) );
 	pfl.onGround = true;
-	pfl.noFallingDamage = false;
+	pfl.noFallingDamage = true;
 
 	// Start in idle
 	SetAnimState( ANIMCHANNEL_TORSO, "Torso_Idle", 0 );
@@ -1747,7 +1757,7 @@ void idPlayer::Init( void ) {
 	
 	deathSkinTime		= 0;
 	deathStateHitch		= false;
-	jumpDuringHitch = false;
+	jumpDuringHitch = true;
 
 	lastPickupTime = 0;
 
@@ -2964,6 +2974,34 @@ void idPlayer::SpawnToPoint( const idVec3 &spawn_origin, const idAngles &spawn_a
 	lastImpulsePlayer = NULL;
 	lastImpulseTime = 0;
 }
+/*
+==============
+idInventory::GainExp - It works! I think
+==============
+*/
+void idPlayer::GainExp(void){
+	
+	idInventory::weaponExp += 1;
+	int a = idInventory::weaponLevel;
+	if (idInventory::weaponExp >= 2){
+		idInventory::weaponLevel = idInventory::weaponExp / 2;
+	}
+	gameLocal.Printf("CurrentExp : %u \n ", idInventory::weaponExp);
+	if (a < idInventory::weaponLevel){
+		gameLocal.Printf("Weapon Level increased to :%u \n ", idInventory::weaponLevel);
+	}
+}
+
+/*
+==============
+idInventory::Return Level - this is unneeded now that the variables are static, i think
+==============
+*/
+int idPlayer::ReturnLevel(void){
+	return idInventory::weaponLevel;
+}
+
+
 
 /*
 ===============
@@ -3711,10 +3749,10 @@ void idPlayer::DrawHUD( idUserInterface *_hud ) {
 	// FIXME: this is temp to allow the sound meter to show up in the hud
 	// it should be commented out before shipping but the code can remain
 	// for mod developers to enable for the same functionality
-	_hud->SetStateInt( "s_debug", cvarSystem->GetCVarInteger( "s_showLevelMeter" ) );
+	//_hud->SetStateInt( "s_debug", cvarSystem->GetCVarInteger( "s_showLevelMeter" ) );
 
 	// don't draw main hud in spectator (only mphud)
-	if ( !spectating && !gameDebug.IsHudActive( DBGHUD_ANY ) ) {
+	if (!spectating && !gameDebug.IsHudActive(DBGHUD_ANY)) { 
 		// weapon targeting crosshair
 		if ( !GuiActive() ) {
 			if ( weapon && weapon->GetZoomGui( ) && zoomed ) {
@@ -7426,7 +7464,21 @@ void idPlayer::SetFocus ( playerFocus_t newType, int _focusTime, idEntity* newEn
 		focusTime = gameLocal.time + _focusTime;
 	}
 }
+/*
+=================
+idPlayer::WrenchSlam
 
+Slam Attack for the Wrench
+=================
+*/
+/*void idPlayer::WrenchSlam(void){
+	if (!physicsObj.HasGroundContacts()){
+		physicsObj.SetGravity(.1*gameLocal.GetCurrentGravity(this));
+	}
+	else{
+		physicsObj.SetGravity(10*gameLocal.GetCurrentGravity(this));
+	}
+}*/
 /*
 =================
 idPlayer::CrashLand
@@ -9041,6 +9093,7 @@ void idPlayer::Move( void ) {
 		pfl.onLadder	= false;
 		pfl.jump		= false;
 	} else {
+		
 		pfl.crouch	= physicsObj.IsCrouching();
 		pfl.onGround	= physicsObj.HasGroundContacts();
 		pfl.onLadder	= physicsObj.OnLadder();
@@ -9751,7 +9804,7 @@ void idPlayer::Killed( idEntity *inflictor, idEntity *attacker, int damage, cons
 			if( gameLocal.mpGame.GetGameState()->GetMPGameState() != WARMUP )
 			{
 				/// Remove the player's armor
-				inventory.armor = 0;
+				//inventory.armor = 0;
 
 				/// Preserve this player's weapons at the state of his death, to be restored on respawn
 				carryOverCurrentWeapon = currentWeapon;
@@ -11058,7 +11111,7 @@ void idPlayer::CalculateRenderView( void ) {
 // RAVEN END
 				SmoothenRenderView( false );
 			} else if ( pm_thirdPerson.GetBool() ) {
-				OffsetThirdPersonView( pm_thirdPersonAngle.GetFloat(), pm_thirdPersonRange.GetFloat(), pm_thirdPersonHeight.GetFloat(), pm_thirdPersonClip.GetBool() );
+				OffsetThirdPersonView( pm_thirdPersonAngle.GetFloat(), pm_thirdPersonRange.GetFloat(), pm_thirdPersonHeight.GetFloat(), pm_thirdPersonClip.GetBool() );				
 				SmoothenRenderView( false );
 			} else if ( pm_thirdPersonDeath.GetBool() ) {
 				range = gameLocal.time < minRespawnTime ? ( gameLocal.time + RAGDOLL_DEATH_TIME - minRespawnTime ) * ( 120.0f / RAGDOLL_DEATH_TIME ) : 120.0f;

@@ -515,7 +515,7 @@ void idPlayerView::SingleView( idUserInterface *hud, const renderView_t *view, i
 	}
 
 	// draw screen blobs
-	if ( !pm_thirdPerson.GetBool() && !g_skipViewEffects.GetBool() ) {
+	if (!g_skipViewEffects.GetBool() ) {
 		for ( int i = 0 ; i < MAX_SCREEN_BLOBS ; i++ ) {
 			screenBlob_t	*blob = &screenBlobs[i];
 			if ( blob->finishTime <= gameLocal.time ) {
@@ -755,25 +755,32 @@ void idPlayerView::RenderPlayerView( idUserInterface *hud ) {
 
 	if ( g_skipViewEffects.GetBool() ) {
 		SingleView( hud, view );
-	} else {
-		if ( player->GetInfluenceMaterial() || player->GetInfluenceEntity() ) {
-			InfluenceVision( hud, view );
+	}
+	else {
+		if (player->GetInfluenceMaterial() || player->GetInfluenceEntity()) {
+			InfluenceVision(hud, view);
 			guiRendered = true;
-		} else if ( g_doubleVision.GetBool() && gameLocal.time < dvFinishTime ) {
-			DoubleVision( hud, view, dvFinishTime - gameLocal.time );
-			guiRendered = false;
-		} else {
-			SingleView( hud, view, RF_NO_GUI | RF_PRIMARY_VIEW );
 		}
-
+		else if (g_doubleVision.GetBool() && gameLocal.time < dvFinishTime) {
+			DoubleVision(hud, view, dvFinishTime - gameLocal.time);
+			guiRendered = false;
+		}
+		else {
+			SingleView(hud, view, RF_NO_GUI | RF_PRIMARY_VIEW);
+		}
+	
+		SingleView(hud, view, RF_NO_GUI | RF_PRIMARY_VIEW);
 		// Now draw GUI's.
 		if ( !guiRendered ) {
 			SingleView( hud, view, RF_GUI_ONLY );
 		}
 
 		ScreenFade();
+		
 	}
-
+	if (!guiRendered) {
+		SingleView(hud, view, RF_GUI_ONLY);
+	}
 	if ( net_clientLagOMeter.GetBool() && lagoMaterial && gameLocal.isClient && !( gameLocal.GetDemoState() == DEMO_PLAYING && ( gameLocal.IsServerDemo() || gameLocal.IsTimeDemo() ) ) ) {
 		renderSystem->SetColor4( 1.0f, 1.0f, 1.0f, 1.0f );
 		renderSystem->DrawStretchPic( 10.0f, 380.0f, 64.0f, 64.0f, 0.0f, 0.0f, 1.0f, 1.0f, lagoMaterial );

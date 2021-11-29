@@ -39,6 +39,7 @@ rvAIMedic::rvAIMedic ( void ) {
 	wasAware = false;
 	wasIgnoreEnemies = false;
 	healDebounceTime = 0;
+	
 }
 
 void rvAIMedic::InitSpawnArgsVariables( void )

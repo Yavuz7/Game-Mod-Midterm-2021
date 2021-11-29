@@ -1112,6 +1112,7 @@ void idPhysics_Player::CheckGround( bool checkStuck ) {
 			// don't allow another jump for a little while
 			current.movementFlags |= PMF_TIME_LAND;
 			current.movementTime = 250;
+			
 		}		
 	}
 
@@ -1265,7 +1266,7 @@ idPhysics_Player::CheckJump
 */
 bool idPhysics_Player::CheckJump( void ) {
 	idVec3 addVelocity;
-
+	idPhysics_Base::SetGravity(.5*gravityNormal);
 	// CheckJump only called from WalkMove, therefore with walking == true
 	// in MP game we always have groundPlane == walking
 	// (this mostly matters to velocity clipping against ground when the jump is ok'ed)

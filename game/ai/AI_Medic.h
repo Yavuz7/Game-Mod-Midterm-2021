@@ -84,6 +84,7 @@ private:
 	void				Event_EnableMovement			( void );
 	void				Event_DisableMovement			( void );
 
+
 	rvScriptFuncUtility	mPostHealScript;		// script to run after completing a heal
 
 	CLASS_STATES_PROTOTYPE ( rvAIMedic );

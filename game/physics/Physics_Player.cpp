@@ -1271,23 +1271,40 @@ void idPhysics_Player::CheckLadder( void ) {
 idPhysics_Player::CheckJump
 =============
 */
-bool idPhysics_Player::CheckJump( void ) {
+bool idPhysics_Player::CheckJump(void) {
 	idVec3 addVelocity;
+	if (command.upmove < 0){
+		groundPlane = false;		// jumping away
+		walking = false;
+		if (command.forwardmove < 10){
+				command.upmove = 10;
+				addVelocity = 4.0f * maxJumpHeight * -gravityVector;
+				addVelocity *= idMath::Sqrt(addVelocity.Normalize());
+				current.velocity += addVelocity;
+			
+		}
+		else{
+			addVelocity = 1.0f * maxJumpHeight * -gravityVector;
+			addVelocity *= idMath::Sqrt(addVelocity.Normalize());
+			current.velocity += addVelocity;
+			command.upmove = 10;
+		}
 
-	if ( command.upmove < 10 ) {
+	}
+	if (command.upmove < 10) {
 		// not holding jump
 		return false;
 	}
 
 	// must wait for jump to be released
-	if ( current.movementFlags & PMF_JUMP_HELD ) {
+	if (current.movementFlags & PMF_JUMP_HELD) {
 		return false;
 	}
 
 	// don't jump if we can't stand up
-	if ( current.movementFlags & PMF_DUCKED ) {
+	/*if ( current.movementFlags & PMF_DUCKED ) {
 		return false;
-	}
+		}*/
 
 	groundPlane = false;		// jumping away
 	walking = false;
@@ -1296,6 +1313,11 @@ bool idPhysics_Player::CheckJump( void ) {
 	addVelocity = 2.0f * maxJumpHeight * -gravityVector;
 	addVelocity *= idMath::Sqrt( addVelocity.Normalize() );
 	current.velocity += addVelocity;
+	if (command.upmove < 10){
+		addVelocity = 2.0f * maxJumpHeight * -gravityVector;
+		addVelocity *= idMath::Sqrt(addVelocity.Normalize());
+		current.velocity += addVelocity;
+	}
 
 // RAVEN BEGIN
 // bdube: crouch slide, nick maggoire is awesome

@@ -265,7 +265,7 @@ idTrigger_Multi::idTrigger_Multi( void ) {
 	touchVehicle = false;
 	triggerFirst = false;
 	triggerWithSelf = false;
-	buyZoneTrigger = 0;
+	buyZoneTrigger = 1;
 	controlZoneTrigger = 0;
 	prevZoneController = TEAM_NONE;
 }
@@ -643,14 +643,14 @@ void idTrigger_Multi::Event_Touch( idEntity *other, trace_t *trace ) {
 			}
 
 		    // Buy zone handling
-		    if ( buyZoneTrigger /*&& gameLocal.mpGame.mpGameState.gameState.currentState != 1*/ ) {
+		   // if ( buyZoneTrigger /*&& gameLocal.mpGame.mpGameState.gameState.currentState != 1*/ ) {
 			    idPlayer *p = static_cast< idPlayer * >( other );
 			    if ( buyZoneTrigger-1 == p->team || buyZoneTrigger == 3)
 			    {
 				    p->inBuyZone = true;
 				    p->inBuyZonePrev = true;
 			    }
-		    }
+		   // }
     
 		    // Control zone handling
 		    if ( controlZoneTrigger > 0 ) {

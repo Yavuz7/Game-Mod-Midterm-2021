@@ -283,7 +283,7 @@ void rvWeaponGauntlet::Attack ( void ) {
 	if ( gameLocal.time > nextAttackTime ) {					
 		if ( ent ) {
 			if ( ent->fl.takedamage ) {
-				float dmgScale = 1.0f;
+				float dmgScale = weaponLevel*1.0f;
 				dmgScale *= owner->PowerUpModifier( PMOD_MELEE_DAMAGE );
 				ent->Damage ( owner, owner, playerViewAxis[0], spawnArgs.GetString ( "def_damage" ), dmgScale, 0 );
 				StartSound( "snd_hit", SND_CHANNEL_ANY, 0, false, NULL );
@@ -460,6 +460,7 @@ stateResult_t rvWeaponGauntlet::State_Idle ( const stateParms_t& parms ) {
 rvWeaponGauntlet::State_Fire
 ================
 */
+//idPlayer p;
 stateResult_t rvWeaponGauntlet::State_Fire ( const stateParms_t& parms ) {
 	enum {
 		STAGE_START,
@@ -473,15 +474,17 @@ stateResult_t rvWeaponGauntlet::State_Fire ( const stateParms_t& parms ) {
 		case STAGE_START:	
 			PlayAnim ( ANIMCHANNEL_ALL, "attack_start", parms.blendFrames );
 			StartBlade ( );
-			loopSound = LOOP_NONE;
+			loopSound = LOOP_NONE;			
+			//p.WrenchSlam();
+			Attack();
 			return SRESULT_STAGE(STAGE_START_WAIT);
 		
 		case STAGE_START_WAIT:
-			if ( !wsfl.attack ) {
+			if ( !wsfl.attack ) {				
 				return SRESULT_STAGE ( STAGE_END );
 			}
 			if ( AnimDone ( ANIMCHANNEL_ALL, parms.blendFrames ) ) {
-				return SRESULT_STAGE ( STAGE_LOOP );
+				//return SRESULT_STAGE ( STAGE_LOOP );
 			}
 			return SRESULT_WAIT;
 			
@@ -491,10 +494,10 @@ stateResult_t rvWeaponGauntlet::State_Fire ( const stateParms_t& parms ) {
 			return SRESULT_STAGE(STAGE_LOOP_WAIT);
 			
 		case STAGE_LOOP_WAIT:
-			if ( !wsfl.attack || wsfl.lowerWeapon ) {
-				return SRESULT_STAGE ( STAGE_END );
+			if ( !wsfl.attack || wsfl.lowerWeapon ) {	
+				return SRESULT_STAGE(STAGE_END);
 			}
-			Attack ( );
+			Attack ( );			
 			return SRESULT_WAIT;
 		
 		case STAGE_END:

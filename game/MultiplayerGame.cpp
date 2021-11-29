@@ -354,7 +354,7 @@ void idMultiplayerGame::Clear() {
 	pureReady = false;
 	scoreBoard = NULL;
 	buyMenu = NULL;
-	isBuyingAllowedRightNow = false;
+	isBuyingAllowedRightNow = true;
 	statSummary = NULL;
 	mainGui = NULL;
 	msgmodeGui = NULL;
@@ -5575,7 +5575,7 @@ void idMultiplayerGame::ReadFromSnapshot( const idBitMsgDelta &msg ) {
 	bool		proto69 = ( gameLocal.GetCurrentDemoProtocol() == 69 );
 
 	if ( proto69 ) {
-		isBuyingAllowedRightNow = false;
+		isBuyingAllowedRightNow = true;
 		powerupCount = 0;
 		marineScoreBarPulseAmount = 0;
 		stroggScoreBarPulseAmount = 0;
@@ -9060,11 +9060,11 @@ idMultiplayerGame::OpenLocalBuyMenu
 */
 void idMultiplayerGame::OpenLocalBuyMenu( void )
 {
-	// Buy menu work in progress
-	//if ( gameLocal.mpGame.GetCurrentMenu() == 4 )
-	//{	
-	//		return;
-	//}
+	//Buy menu work in progress
+	if ( gameLocal.mpGame.GetCurrentMenu() == 4 )
+	{	
+		return;
+	}
 
 	if ( currentMenu == 4 )
 		return; // Already open
@@ -9136,7 +9136,7 @@ idMultiplayerGame::IsBuyingAllowedRightNow
 */
 bool idMultiplayerGame::IsBuyingAllowedRightNow( void )
 {
-	return ( IsBuyingAllowedInTheCurrentGameMode() && isBuyingAllowedRightNow );
+	return ( IsBuyingAllowedInTheCurrentGameMode());
 }
 
 
